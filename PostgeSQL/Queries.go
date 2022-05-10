@@ -404,6 +404,26 @@ func GetIDUserFromUsersVK(userVKID int) int {
 	return int(id_user.Int32)
 }
 
+func CheckCountTrackedPersons(userSession *Models.UserSession, maxCount int) bool {
+	db, err := Connect()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	var count sql.NullInt32
+
+	// Взять id пользователя, для которого хотим добавить отслеживаемого
+	user_id := GetIDUserFromUsersVK(userSession.UserID_VK)
+
+	// Взять id пользователя, для которого хотим добавить отслеживаемого
+	query := fmt.Sprintf("select count(*) from userperson where user_id = %d", user_id)
+	if err := db.QueryRow(query).Scan(&count); err != nil {
+		panic(err)
+	}
+	return int(count.Int32) < maxCount
+}
+
 // добавить личность в отслеживаемые
 func AddPersonInTracked(user Models.User, userVkID int, userSession *Models.UserSession) error {
 	db, err := Connect()
@@ -627,12 +647,6 @@ func GetPrevListFriends(id_tp int) ([]int, error) {
 		panic(err)
 	}
 	defer db.Close()
-
-	// добавить в TrackedPersons
-	//id_tp, err := AddUserInTrackedPersons(userVKID)
-	//if err != nil {
-	//	panic(err)
-	//}
 
 	// получить список прежних друзей
 	query := fmt.Sprintf("select vk_id from personprevfriends where tp_id = %d", id_tp)

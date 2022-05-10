@@ -150,7 +150,7 @@ func main() {
 					msg1.ReplyMarkup = Keyboard.GetFriendsByNameKeyboard(listFriends)
 				} else {
 					for _, friend := range friends {
-						fmt.Println(friend.UID, " ", friend.FirstName, " ", friend.LastName)
+						//fmt.Println(friend.UID, " ", friend.FirstName, " ", friend.LastName)
 						listFriends[friend.UID] = *friend
 					}
 					// меняем caption у сообщения, сообщаем о том, что поиск прошел успешно
@@ -349,13 +349,19 @@ func main() {
 				if err != nil {
 					panic(err)
 				}
-				person, isExist := Utils.AddPersonInTracked(user, userAdd)
-				//var msg tgbotapi.EditMessageCaptionConfig
-				if isExist {
-					msg = tgbotapi.NewEditMessageCaption(chatID, messageID, person.User.FirstName+" "+person.User.LastName+" уже есть в отслеживаемых.")
-					msg.ReplyMarkup = Keyboard.GetAddToTrackedKeyboard()
+				isCanAddPersonInTracked := Postgesql.CheckCountTrackedPersons(user, config.MaxCountTrackedPersons)
+				if isCanAddPersonInTracked {
+					person, isExist := Utils.AddPersonInTracked(user, userAdd)
+					//var msg tgbotapi.EditMessageCaptionConfig
+					if isExist {
+						msg = tgbotapi.NewEditMessageCaption(chatID, messageID, person.User.FirstName+" "+person.User.LastName+" уже есть в отслеживаемых.")
+						msg.ReplyMarkup = Keyboard.GetAddedInTrackedKeyboard()
+					} else {
+						msg = tgbotapi.NewEditMessageCaption(chatID, messageID, person.User.FirstName+" "+person.User.LastName+" Успешно добавлен")
+						msg.ReplyMarkup = Keyboard.GetAddedInTrackedKeyboard()
+					}
 				} else {
-					msg = tgbotapi.NewEditMessageCaption(chatID, messageID, person.User.FirstName+" "+person.User.LastName+" Успешно добавлен")
+					msg = tgbotapi.NewEditMessageCaption(chatID, messageID, "Вы не можете добавить, так как у вас уже максимум отслеживаемых (Можно отслеживать максимум "+strconv.Itoa(config.MaxCountTrackedPersons)+" человек")
 					msg.ReplyMarkup = Keyboard.GetAddedInTrackedKeyboard()
 				}
 				if _, err = bot.Send(msg); err != nil {

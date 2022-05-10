@@ -39,17 +39,29 @@ func GetMainKeyboard(isToken bool) *tgbotapi.InlineKeyboardMarkup {
 // клавиатура для "Слежка"
 func GetSurvaillanceKeyboard(user *Models.UserSession) *tgbotapi.InlineKeyboardMarkup {
 	var keyboardSurvaillance tgbotapi.InlineKeyboardMarkup
-	listButtons := []tgbotapi.InlineKeyboardButton{}
 
+	listButtons1 := []tgbotapi.InlineKeyboardButton{}
+	listButtons2 := []tgbotapi.InlineKeyboardButton{}
+	listButtons3 := []tgbotapi.InlineKeyboardButton{}
+	i := 1
 	for _, user := range user.Persons {
 		nameFriend := user.User.FirstName + " " + user.User.LastName
 		data := Pages.TRACKED + "_" + strconv.Itoa(user.User.UID)
-		listButtons = append(listButtons, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+		if i <= 2 {
+			listButtons1 = append(listButtons1, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+		} else if i > 2 && i <= 4 {
+			listButtons2 = append(listButtons2, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+		} else if i > 4 && i <= 6 {
+			listButtons3 = append(listButtons3, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+		}
+		i += 1
 	}
 
 	if len(user.Persons) != 0 {
 		keyboardSurvaillance = tgbotapi.NewInlineKeyboardMarkup(
-			tgbotapi.NewInlineKeyboardRow(listButtons...),
+			listButtons1[:],
+			listButtons2[:],
+			listButtons3[:],
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("Добавить в отслеживаемые", Pages.ADD_TO_TRACKED),
 			),
@@ -83,16 +95,35 @@ func GetFriendsByNameKeyboard(listFriends map[int]Models.User) *tgbotapi.InlineK
 	var keyboardSurvaillance tgbotapi.InlineKeyboardMarkup
 
 	if len(listFriends) != 0 {
-		listButtons := []tgbotapi.InlineKeyboardButton{}
-
+		listButtons1 := []tgbotapi.InlineKeyboardButton{}
+		listButtons2 := []tgbotapi.InlineKeyboardButton{}
+		listButtons3 := []tgbotapi.InlineKeyboardButton{}
+		listButtons4 := []tgbotapi.InlineKeyboardButton{}
+		listButtons5 := []tgbotapi.InlineKeyboardButton{}
+		i := 1
 		for key, user := range listFriends {
 			nameFriend := user.FirstName + " " + user.LastName
 			data := Pages.ADD_BY_NAME + "_" + strconv.Itoa(key)
-			listButtons = append(listButtons, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+			if i <= 2 {
+				listButtons1 = append(listButtons1, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+			} else if i > 2 && i <= 4 {
+				listButtons2 = append(listButtons2, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+			} else if i > 4 && i <= 6 {
+				listButtons3 = append(listButtons3, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+			} else if i > 6 && i <= 8 {
+				listButtons4 = append(listButtons4, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+			} else if i > 8 && i <= 10 {
+				listButtons5 = append(listButtons5, tgbotapi.NewInlineKeyboardButtonData(nameFriend, data))
+			}
+			i += 1
 		}
 
 		keyboardSurvaillance = tgbotapi.NewInlineKeyboardMarkup(
-			tgbotapi.NewInlineKeyboardRow(listButtons...),
+			listButtons1[:],
+			listButtons2[:],
+			listButtons3[:],
+			listButtons4[:],
+			listButtons5[:],
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("Назад", Pages.ADD_BY_NAME),
 				tgbotapi.NewInlineKeyboardButtonData("На главную", Pages.MAIN),

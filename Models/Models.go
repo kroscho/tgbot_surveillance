@@ -8,9 +8,10 @@ type PostgreSQL struct {
 }
 
 type Config struct {
-	TelegramBotToken string
-	Secret           string
-	PostgreSQL       PostgreSQL
+	TelegramBotToken       string
+	Secret                 string
+	MaxCountTrackedPersons int
+	PostgreSQL             PostgreSQL
 }
 
 // тип слежки

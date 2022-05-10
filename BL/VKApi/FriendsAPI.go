@@ -17,7 +17,7 @@ func GetFriendsByName(user *Models.UserSession, query string) ([]*Models.User, e
 	if err != nil {
 		fmt.Println("error decrypting your encrypted text: ", err)
 	}
-	q := VK_API_GET_FRIENDS_BY_NAME_URL + "?access_token=" + decToken + "&user_id=" + strconv.Itoa(user.UserID_VK) + "&q=" + query + "&count=5" + "&v=" + VK_API_VERSION
+	q := VK_API_GET_FRIENDS_BY_NAME_URL + "?access_token=" + decToken + "&user_id=" + strconv.Itoa(user.UserID_VK) + "&q=" + query + "&count=10" + "&v=" + VK_API_VERSION
 	fmt.Println(q)
 	resp, err := http.Get(q)
 	if err != nil {
