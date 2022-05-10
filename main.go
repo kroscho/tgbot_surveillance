@@ -400,7 +400,6 @@ func main() {
 			case callQuery == Pages.INFO_ABOUT_FRIENDS_NEW:
 				fmt.Println(Pages.INFO_ABOUT_FRIENDS_NEW)
 				msg := tgbotapi.NewEditMessageCaption(chatID, messageID, "Идет процесс проверки друзей, подождите немного. \nВремя зависит от количества друзей.")
-				//msg.ReplyMarkup = Keyboard.GetAddedAndDeletedFriendsKeyboard(user.CurTrackedPersonID)
 				if _, err = bot.Send(msg); err != nil {
 					panic(err)
 				}
@@ -424,14 +423,14 @@ func main() {
 				if err != nil {
 					panic(err)
 				}
-				addedFriendsIds, deletedFriendsIds := Utils.CheckDeletedAndNewFriends(user, newListFriendsMap, prevListFriends)
+				addedFriendsIds, deletedFriendsIds := Utils.CheckDeletedAndNewFriends(user, newListFriendsMap, prevListFriends, id_tp)
 				// если есть какие то изменения в друзьях, то обновляем прежний список друзей на новый
 				if len(addedFriendsIds) != 0 || len(deletedFriendsIds) != 0 {
 					msg = tgbotapi.NewEditMessageCaption(chatID, messageID, "Обновляем данные, осталось немного.")
 					if _, err = bot.Send(msg); err != nil {
 						panic(err)
 					}
-					Postgesql.UpdatePrevListFriends(id_tp, newListFriends)
+					//Postgesql.UpdatePrevListFriends(id_tp, newListFriends)
 					Postgesql.AddInfoAboutFriendsInHistory(id_tp, addedFriendsIds, deletedFriendsIds)
 				}
 				text := Utils.GetTextAboutAddedAndDeletedFriends(addedFriendsIds, deletedFriendsIds)

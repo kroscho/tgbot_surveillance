@@ -36,7 +36,7 @@ func TestGetAddedAndDeletedFriends(t *testing.T) {
 	app := Models.NewServerApplication()
 	user := app.GetUserSession(401948312)
 
-	addedFriendsIds, deletedFriendsIds := Utils.CheckDeletedAndNewFriends(user, newListFriends, prevListFriends)
+	addedFriendsIds, deletedFriendsIds := Utils.CheckDeletedAndNewFriends(user, newListFriends, prevListFriends, 1)
 
 	for _, addedFriend := range addedFriendsIds {
 		fmt.Println("Новый друг: ", addedFriend.UID, addedFriend.FirstName, addedFriend.LastName)

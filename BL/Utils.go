@@ -25,7 +25,7 @@ func AddPersonInTracked(user *Models.UserSession, userAdd *Models.User) (Models.
 }
 
 // выявить новых друзей на основе прежнего и нового списка друзей
-func CheckDeletedAndNewFriends(user *Models.UserSession, newListFriends map[int]Models.User, prevListFriends []int) (map[int]Models.User, map[int]Models.User) {
+func CheckDeletedAndNewFriends(user *Models.UserSession, newListFriends map[int]Models.User, prevListFriends []int, id_tp int) (map[int]Models.User, map[int]Models.User) {
 	addedFriendsIds := make(map[int]Models.User)
 	deletedFriendsIds := make(map[int]Models.User)
 	i := 0
@@ -42,12 +42,14 @@ func CheckDeletedAndNewFriends(user *Models.UserSession, newListFriends map[int]
 				if friend != nil {
 					fmt.Println(friend.UID)
 					deletedFriendsIds[friend.UID] = *friend
+					Postgesql.DeleteDeletedUserFromPrevFriends(id_tp, *friend)
 					isDeleted = true
 				}
 			}
 		}
 		if !isDeleted && !CheckExistInList(key, prevListFriends) {
 			addedFriendsIds[key] = val
+			Postgesql.AddAddedUserInPrevFriends(id_tp, val)
 		}
 		i += 1
 	}

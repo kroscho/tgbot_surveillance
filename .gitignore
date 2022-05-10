@@ -1,1 +1,7 @@
 *.json
+
+*.drawio
+
+test/
+
+Tests/

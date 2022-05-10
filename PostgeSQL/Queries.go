@@ -275,6 +275,46 @@ func DeleteDataPrevFriends(id_tp int) {
 	fmt.Println(result.RowsAffected())
 }
 
+// Удалить из прежнего списка удаленного друга
+func DeleteDeletedUserFromPrevFriends(id_tp int, delUser Models.User) {
+	db, err := Connect()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	// получить id удаленного друга с таблицы UsersVK
+	id_user_vk, err := AddUserInUsersVK(delUser)
+	if err != nil {
+		panic(err)
+	}
+	// удаляем данные с таблицы
+	result, err := db.Exec("delete from personprevfriends where tp_id=$1 and vk_id=$2", id_tp, id_user_vk)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(result.RowsAffected())
+}
+
+// Добавить в прежний список нового друга
+func AddAddedUserInPrevFriends(id_tp int, addedUser Models.User) {
+	db, err := Connect()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	// получить id удаленного друга с таблицы UsersVK
+	id_user_vk, err := AddUserInUsersVK(addedUser)
+	if err != nil {
+		panic(err)
+	}
+	_, err = db.Exec("insert into personprevfriends (tp_id, vk_id) values ($1, $2)", id_tp, id_user_vk)
+	if err != nil {
+		panic(err)
+	}
+}
+
 // Убрать человека из отслеживаемых
 func DeleteFromTrackedPerson(user_id int, id_tp int, id_vk int) {
 	db, err := Connect()
